@@ -1,6 +1,7 @@
 import { getSeed } from "@/lib/seed";
 
 import { GameCard } from "@/components/GameCard";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { getGameWithScreenshots } from "@/lib/rawg";
 
 export default async function Home() {
@@ -31,7 +32,6 @@ export default async function Home() {
             developerName: it.developerName,
             province: it.province,
             steamUrl: it.steamUrl,
-            itchUrl: it.itchUrl,
             websiteUrl: it.websiteUrl,
           },
           rawgInfo: {
@@ -69,7 +69,6 @@ export default async function Home() {
             developerName: it.developerName,
             province: it.province,
             steamUrl: it.steamUrl,
-            itchUrl: it.itchUrl,
             websiteUrl: it.websiteUrl,
           },
           rawgInfo: null,
@@ -79,23 +78,24 @@ export default async function Home() {
   );
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50">
-      <div className="mx-auto max-w-6xl px-4 py-8">
-        <header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <div className="mx-auto max-w-8xl px-10 py-8">
+        <header className="mb-6 grid gap-3 text-center sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+          <div className="hidden sm:block" />
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-5xl">
               FablaGames
             </h1>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
               Videojuegos y creadores locales de Aragón.
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-slate-600">
-            RAWG + Seed local
+          <div className="flex justify-center sm:justify-end">
+            <ThemeToggle />
           </div>
         </header>
 
-        <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <section className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:gap-10">
           {enriched.map((g) => (
             <GameCard
               key={g.key}

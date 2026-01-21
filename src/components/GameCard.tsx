@@ -8,7 +8,6 @@ type SeedInfo = {
   developerName: string;
   province?: string;
   steamUrl?: string;
-  itchUrl?: string;
   websiteUrl?: string;
 };
 
@@ -63,12 +62,12 @@ export function GameCard({
   const provinceLabel = province?.trim() ? province.trim() : "Sin provincia";
   const provinceStyles =
     provinceLabel.toLowerCase() === "zaragoza"
-      ? "bg-amber-100 text-amber-700"
+      ? "bg-emerald-100 text-emerald-700"
       : provinceLabel.toLowerCase() === "teruel"
       ? "bg-fuchsia-100 text-fuchsia-700"
       : provinceLabel.toLowerCase() === "huesca"
       ? "bg-sky-100 text-sky-700"
-      : "bg-emerald-100 text-emerald-700";
+      : "bg-amber-100 text-amber-700";
 
   useEffect(() => {
     if (!isOpen) return;
@@ -87,6 +86,47 @@ export function GameCard({
 
   const openDrawer = () => setIsOpen(true);
 
+  const badgeClass =
+    "rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-slate-100 dark:border-slate-500 dark:bg-slate-700";
+  const badgeLinkClass =
+    "rounded-full border border-indigo-500 bg-indigo-600 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white shadow-sm transition hover:bg-indigo-500 dark:border-indigo-400 dark:bg-indigo-500 dark:hover:bg-indigo-400";
+  const tooltipClass =
+    "pointer-events-none absolute left-1/2 top-full z-10 mt-2 w-max max-w-xs -translate-x-1/2 rounded bg-slate-900 px-2 py-1 text-xs text-white opacity-0 shadow transition group-hover:opacity-100 break-words text-center dark:bg-black";
+
+  const renderBadge = (
+    label: string,
+    value: string,
+    href?: string,
+    showTooltip = true,
+    className?: string
+  ) => (
+    <span className="group relative inline-flex">
+      {href ? (
+        <a
+          className={className ?? badgeClass}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {label}
+        </a>
+      ) : (
+        <span className={className ?? badgeClass}>{label}</span>
+      )}
+      {showTooltip && <span className={tooltipClass}>{value}</span>}
+    </span>
+  );
+
+  const ratingValue = rawgInfo?.rating
+    ? `${rawgInfo.rating.toFixed(1)}${
+        rawgInfo.ratingsCount ? ` (${rawgInfo.ratingsCount} votos)` : ""
+      }`
+    : "Sin datos";
+  const metacriticValue =
+    rawgInfo?.metacritic !== null && rawgInfo?.metacritic !== undefined
+      ? String(rawgInfo.metacritic)
+      : "Sin datos";
+
   return (
     <>
       <article
@@ -99,7 +139,8 @@ export function GameCard({
             openDrawer();
           }
         }}
-        className="group w-full overflow-hidden rounded-2xl border border-white/40 bg-white/80 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+        aria-label={`Abrir detalles de ${title} (${seed})`}
+        className="group w-full overflow-hidden rounded-2xl border border-white/40 bg-white/80 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 dark:border-slate-800 dark:bg-slate-900/80 dark:ring-1 dark:ring-slate-800"
       >
         <div className="relative">
           <div className="relative aspect-video">
@@ -120,10 +161,6 @@ export function GameCard({
             )}
           </div>
           <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent" />
-
-          <div className="absolute left-3 top-3 rounded-full bg-black/70 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-white">
-            {seed}
-          </div>
 
           {hasImages && safeImages.length > 1 && (
             <>
@@ -154,10 +191,10 @@ export function GameCard({
         </div>
 
         <div className="space-y-2 px-4 pb-4 pt-3">
-          <h3 className="line-clamp-1 text-base font-semibold text-neutral-900">
+          <h3 className="line-clamp-1 text-base font-semibold text-neutral-900 dark:text-slate-100">
             {title}
           </h3>
-          <div className="flex items-center justify-between text-sm text-neutral-600">
+          <div className="flex items-center justify-between text-sm text-neutral-600 dark:text-slate-300">
             <span className="font-medium">{developer}</span>
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-semibold ${provinceStyles}`}
@@ -181,12 +218,12 @@ export function GameCard({
             aria-label="Cerrar"
             onClick={() => setIsOpen(false)}
           />
-          <div className="relative z-10 flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl sm:max-h-[85vh]">
-            <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
+          <div className="relative z-10 flex w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl sm:max-h-[92vh] dark:border dark:border-slate-800 dark:bg-slate-950">
+            <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
               <div> 
                 {rawgInfo?.website ? (
                   <a
-                    className="block text-xl font-semibold text-blue-900"
+                    className="block text-xl font-semibold text-blue-900 dark:text-blue-300"
                     href={rawgInfo.website}
                     target="_blank"
                     rel="noreferrer"
@@ -194,13 +231,13 @@ export function GameCard({
                     {title}
                   </a>
                 ) : (
-                  <h3 className="block text-xl font-semibold text-slate-900">
+                  <h3 className="block text-xl font-semibold text-slate-900 dark:text-slate-100">
                     {title}
                   </h3>
                 )}
                 {seedInfo.websiteUrl ? (
                   <a
-                    className="inline-flex items-center gap-2 text-sm text-slate-600"
+                    className="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300"
                     href={seedInfo.websiteUrl}
                     target="_blank"
                     rel="noreferrer"
@@ -217,15 +254,17 @@ export function GameCard({
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M18 14v4.833A1.166 1.166 0 0 1 16.833 20H5.167A1.167 1.167 0 0 1 4 18.833V7.167A1.166 1.166 0 0 1 5.167 6h4.618m4.447-2H20v5.768m-7.889 2.121 7.778-7.778"
                       />
                     </svg>
                   </a>
                 ) : (
-                  <p className="text-sm text-slate-600">{seedInfo.developerName}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    {seedInfo.developerName}
+                  </p>
                 )}
               </div>
               <span
@@ -236,8 +275,8 @@ export function GameCard({
             </div>
 
             <div className="space-y-4 overflow-y-auto px-5 pb-6 pt-4">
-              <div className="overflow-hidden rounded-xl border border-slate-100">
-                <div className="relative aspect-video bg-slate-100">
+              <div className="overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800">
+                <div className="relative aspect-[16/7] bg-slate-100 dark:bg-slate-900">
                   {hasImages ? (
                     <Image
                       src={safeImages[idx]}
@@ -251,89 +290,75 @@ export function GameCard({
                       Sin imágenes
                     </div>
                   )}
+                  {hasImages && safeImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={prev}
+                        aria-label="Anterior"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full border border-white/60 bg-black/60 px-2 py-1 text-sm font-semibold text-white transition hover:bg-black/80"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        onClick={next}
+                        aria-label="Siguiente"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full border border-white/60 bg-black/60 px-2 py-1 text-sm font-semibold text-white transition hover:bg-black/80"
+                      >
+                        ›
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4 text-sm text-slate-700">
-                <div className="min-w-[160px]">
-                  <span className="font-semibold text-slate-900">Steam:</span>{" "}
-                  {seedInfo.steamUrl ? (
-                    <a
-                      className="text-indigo-600 hover:underline"
-                      href={seedInfo.steamUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Abrir
-                    </a>
-                  ) : (
-                    "No disponible"
-                  )}
-                </div>
-                <div className="min-w-[160px]">
-                  <span className="font-semibold text-slate-900">Itch:</span>{" "}
-                  {seedInfo.itchUrl ? (
-                    <a
-                      className="text-indigo-600 hover:underline"
-                      href={seedInfo.itchUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Abrir
-                    </a>
-                  ) : (
-                    "No disponible"
-                  )}
-                </div>
-                <div className="min-w-[160px]">
-                  <span className="font-semibold text-slate-900">Lanzamiento:</span>{" "}
-                  {rawgInfo?.released ?? "Sin datos"}
-                </div>
-                <div className="min-w-[160px]">
-                  <span className="font-semibold text-slate-900">Rating:</span>{" "}
-                  {rawgInfo?.rating ? rawgInfo.rating.toFixed(1) : "Sin datos"}
-                  {rawgInfo?.ratingsCount
-                    ? ` (${rawgInfo.ratingsCount} votos)`
-                    : ""}
-                </div>
-                <div className="min-w-[160px]">
-                  <span className="font-semibold text-slate-900">Metacritic:</span>{" "}
-                  {rawgInfo?.metacritic ?? "Sin datos"}
-                </div>
-                <div className="min-w-[160px]">
-                  <span className="font-semibold text-slate-900">Playtime:</span>{" "}
-                  {rawgInfo?.playtime ? `${rawgInfo.playtime}h` : "Sin datos"}
-                </div>
-                <div className="min-w-[240px]">
-                  <span className="font-semibold text-slate-900">Géneros:</span>{" "}
-                  {rawgInfo?.genres?.length ? rawgInfo.genres.join(", ") : "Sin datos"}
-                </div>
-                <div className="min-w-[240px]">
-                  <span className="font-semibold text-slate-900">Plataformas:</span>{" "}
-                  {rawgInfo?.platforms?.length
+              <div className="flex flex-wrap justify-center gap-3">
+                {renderBadge(
+                  "Steam",
+                  seedInfo.steamUrl ?? "No disponible",
+                  seedInfo.steamUrl,
+                  false,
+                  badgeLinkClass
+                )}
+                {renderBadge("Lanzamiento", rawgInfo?.released ?? "Sin datos")}
+                {renderBadge("Rating", ratingValue)}
+                {renderBadge("Metacritic", metacriticValue)}
+                {renderBadge(
+                  "Playtime",
+                  rawgInfo?.playtime ? `${rawgInfo.playtime}h` : "Sin datos"
+                )}
+                {renderBadge(
+                  "Géneros",
+                  rawgInfo?.genres?.length ? rawgInfo.genres.join(", ") : "Sin datos"
+                )}
+                {renderBadge(
+                  "Plataformas",
+                  rawgInfo?.platforms?.length
                     ? rawgInfo.platforms.join(", ")
-                    : "Sin datos"}
-                </div>
-                <div className="min-w-[240px]">
-                  <span className="font-semibold text-slate-900">
-                    Developers RAWG:
-                  </span>{" "}
-                  {rawgInfo?.developers?.length
+                    : "Sin datos"
+                )}
+                {renderBadge(
+                  "Developers RAWG",
+                  rawgInfo?.developers?.length
                     ? rawgInfo.developers.join(", ")
-                    : "Sin datos"}
-                </div>
-                <div className="min-w-[240px]">
-                  <span className="font-semibold text-slate-900">Publishers:</span>{" "}
-                  {rawgInfo?.publishers?.length
+                    : "Sin datos"
+                )}
+                {renderBadge(
+                  "Publishers",
+                  rawgInfo?.publishers?.length
                     ? rawgInfo.publishers.join(", ")
-                    : "Sin datos"}
-                </div>
+                    : "Sin datos"
+                )}
               </div>
 
               {rawgInfo?.description && (
-                <div className="text-sm leading-relaxed text-slate-700">
-                  {rawgInfo.description}
-                </div>
+                <>
+                  <hr className="mx-4 border-slate-200 dark:border-slate-800" />
+                  <div className="mx-4 text-justify text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                    {rawgInfo.description}
+                  </div>
+                </>
               )}
             </div>
           </div>

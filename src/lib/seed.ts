@@ -5,7 +5,6 @@ export type SeedItem = {
   developerName: string;
   province?: string;
   steamUrl?: string;
-  itchUrl?: string;
   websiteUrl?: string;
 };
 
@@ -26,7 +25,6 @@ export function getSeed(): SeedItem[] {
       developerName,
       province: x.province,
       steamUrl: x.steamUrl,
-      itchUrl: x.itchUrl,
       websiteUrl: x.websiteUrl,
     };
   });
