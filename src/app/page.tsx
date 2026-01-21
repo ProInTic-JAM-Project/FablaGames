@@ -26,6 +26,33 @@ export default async function Home() {
           developer: it.developerName,
           province: it.province,
           images,
+          seedInfo: {
+            rawgSlug: String(it.rawgSlug ?? ""),
+            developerName: it.developerName,
+            province: it.province,
+            steamUrl: it.steamUrl,
+            itchUrl: it.itchUrl,
+            websiteUrl: it.websiteUrl,
+          },
+          rawgInfo: {
+            id: game?.id,
+            slug: game?.slug,
+            name: game?.name,
+            released: game?.released ?? null,
+            rating: game?.rating,
+            ratingsCount: game?.ratings_count,
+            metacritic: game?.metacritic ?? null,
+            playtime: game?.playtime ?? null,
+            description: game?.description_raw ?? null,
+            website: game?.website ?? null,
+            genres: game?.genres?.map((g) => g.name) ?? [],
+            platforms:
+              game?.platforms
+                ?.map((p) => p.platform?.name)
+                .filter((name): name is string => Boolean(name)) ?? [],
+            developers: game?.developers?.map((d) => d.name) ?? [],
+            publishers: game?.publishers?.map((p) => p.name) ?? [],
+          },
         };
       } catch (err) {
         console.warn("Error cargando juego desde RAWG:", it.rawgSlug, err);
@@ -37,6 +64,15 @@ export default async function Home() {
           developer: it.developerName,
           province: it.province,
           images: [],
+          seedInfo: {
+            rawgSlug: String(it.rawgSlug ?? ""),
+            developerName: it.developerName,
+            province: it.province,
+            steamUrl: it.steamUrl,
+            itchUrl: it.itchUrl,
+            websiteUrl: it.websiteUrl,
+          },
+          rawgInfo: null,
         };
       }
     })
@@ -68,6 +104,8 @@ export default async function Home() {
               developer={g.developer}
               province={g.province}
               images={g.images}
+              seedInfo={g.seedInfo}
+              rawgInfo={g.rawgInfo}
             />
           ))}
         </section>

@@ -11,6 +11,17 @@ export type RawgScreenshot = {
     name: string;
     background_image?: string | null;
   background_image_additional?: string | null;
+  description_raw?: string | null;
+  released?: string | null;
+  rating?: number;
+  ratings_count?: number;
+  metacritic?: number | null;
+  playtime?: number | null;
+  website?: string | null;
+  genres?: { name: string }[];
+  platforms?: { platform?: { name?: string } }[];
+  developers?: { name: string }[];
+  publishers?: { name: string }[];
   };
   
   const RAWG_BASE = "https://api.rawg.io/api";
