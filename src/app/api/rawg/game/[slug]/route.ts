@@ -27,7 +27,7 @@ async function fetchJson(url: string) {
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: { slug: string } | Promise<{ slug: string }> }
 ) {
   const key = process.env.RAWG_API_KEY;
   if (!key) {
@@ -37,7 +37,7 @@ export async function GET(
     );
   }
 
-  const { slug: requestedSlug } = params;
+  const { slug: requestedSlug } = await Promise.resolve(params);
 
   // 1) Fetch juego
   const gameUrl = `${RAWG_BASE}/games/${encodeURIComponent(requestedSlug)}?key=${key}`;
